@@ -63,6 +63,7 @@ def _end(message):
 
         #eliminar del array.
         users.remove(message.chat.id)
+        users_timebtc.pop(message.chat.id)
 
         goodbye_msg = "goodbye cowboy 🤠"
         bot.send_message(message.chat.id,goodbye_msg)
@@ -73,7 +74,33 @@ def _end(message):
     else:
         msg = "You have never started me 🤔, to do so use /start"
         bot.send_message(message.chat.id,msg)
-    
+
+
+@bot.message_handler(commands=['timebtc'])
+def _timebtc(message):
+
+    keys = users_timebtc.get(message.chat.id)
+
+    if(keys != None ):
+
+        change_time_msg = "with which you want to change the time in which I notify you, send the time in the following format: HH:MM"
+        bot.send_message(message.chat.id,change_time_msg)
+        #obtener el siguiente msj.
+        bot.register_next_step_handler(message,save_time)
+    else:
+        msg = "You have never started me 🤔, to do so use /start"
+        bot.send_message(message.chat.id,msg)
+
+
+def save_time(message):
+    users_timebtc[message.chat.id] = message.text
+    save_time_msg = message.text + " successfully saved."
+    bot.send_message(message.chat.id,save_time_msg)
+    print(users_timebtc)
+
+
+
+
 #funciones auxiliares.
 # def btc_scraping():
 #     url = requests.get('https://awebanalysis.com/es/coin-details/bitcoin/')
